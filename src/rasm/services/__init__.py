@@ -1,0 +1,1 @@
+"""External service adapters (Roblox API, launcher, cookie helpers)."""

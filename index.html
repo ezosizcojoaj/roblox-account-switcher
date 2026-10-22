@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roblox Account Switcher — Manage Unlimited Roblox Accounts</title>
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --bg-deep: #060814;
+    --bg-navy: #0b1024;
+    --indigo: #4f46e5;
+    --indigo-light: #818cf8;
+    --violet: #a855f7;
+    --cyan: #22d3ee;
+    --text: #e8eaf6;
+    --text-dim: #a0a6c4;
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --card-bg: rgba(255, 255, 255, 0.045);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 0%, rgba(79, 70, 229, 0.28), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 85% 10%, rgba(168, 85, 247, 0.18), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(34, 211, 238, 0.10), transparent 65%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-navy) 45%, #080b1c 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ============ NAV ============ */
+  .nav-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 14px 0;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 22px;
+    border-radius: 16px;
+    background: rgba(13, 17, 38, 0.62);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.02rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--indigo), var(--violet));
+    font-size: 1.05rem;
+    box-shadow: 0 0 18px rgba(129, 140, 248, 0.45);
+  }
+
+  .brand-name {
+    background: linear-gradient(90deg, #fff, #c7d2fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    color: #fff;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 11px;
+    font-size: 0.94rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+    color: #fff;
+    box-shadow: 0 6px 22px rgba(99, 102, 241, 0.42);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.55);
+  }
+
+  .btn-ghost {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.11);
+    transform: translateY(-2px);
+  }
+
+  .nav .btn {
+    padding: 9px 18px;
+    font-size: 0.88rem;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding: 84px 0 72px;
+    text-align: center;
+    position: relative;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 17px;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.13);
+    border: 1px solid rgba(129, 140, 248, 0.38);
+    font-size: 0.79rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #c7d2fe;
+    margin-bottom: 26px;
+  }
+
+  .pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-size: clamp(2.15rem, 5.6vw, 3.9rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 22px;
+    background: linear-gradient(115deg, #ffffff 8%, #c7d2fe 40%, #a855f7 70%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-desc {
+    max-width: 660px;
+    margin: 0 auto 34px;
+    font-size: 1.06rem;
+    color: var(--text-dim);
+  }
+
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 46px;
+  }
+
+  .hero-actions .btn {
+    padding: 14px 30px;
+    font-size: 1rem;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 138px;
+    padding: 14px 22px;
+    border-radius: 14px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .stat-value {
+    font-weight: 700;
+    font-size: 1.12rem;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  .stat-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-dim);
+  }
+
+  /* ============ SECTIONS ============ */
+  section {
+    padding: 72px 0;
+  }
+
+  .section-head {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 52px;
+  }
+
+  .section-eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--indigo-light);
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    background: linear-gradient(90deg, #ffffff, #c7d2fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .section-head p {
+    color: var(--text-dim);
+    font-size: 0.98rem;
+  }
+
+  /* ============ FEATURES ============ */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    position: relative;
+    padding: 30px 26px 28px;
+    border-radius: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--indigo), var(--violet), var(--cyan));
+    opacity: 0.85;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(129, 140, 248, 0.42);
+    background: rgba(255, 255, 255, 0.075);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.5), 0 0 26px rgba(99, 102, 241, 0.18);
+  }
+
+  .feature-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(168, 85, 247, 0.18));
+    border: 1px solid rgba(129, 140, 248, 0.28);
+    font-size: 1.35rem;
+    margin-bottom: 18px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.06rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  /* ============ HOW IT WORKS ============ */
+  .steps {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .steps::before {
+    content: "";
+    position: absolute;
+    left: 27px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--indigo), var(--violet) 55%, var(--cyan));
+    opacity: 0.55;
+    border-radius: 2px;
+  }
+
+  .step {
+    position: relative;
+    display: flex;
+    gap: 26px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--indigo), var(--violet));
+    border: 2px solid rgba(199, 210, 254, 0.35);
+    box-shadow: 0 0 24px rgba(99, 102, 241, 0.5);
+    z-index: 1;
+  }
+
+  .step-body {
+    padding: 18px 24px;
+    border-radius: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    flex: 1;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .step-body h3 {
+    font-size: 1.04rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .step-body p {
+    font-size: 0.92rem;
+    color: var(--text-dim);
+  }
+
+  /* ============ FAQ ============ */
+  .faq-list {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  details {
+    border-radius: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: border-color 0.22s ease, background 0.22s ease;
+  }
+
+  details[open] {
+    border-color: rgba(129, 140, 248, 0.4);
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 19px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: #fff;
+    list-style: none;
+    user-select: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: "+";
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(129, 140, 248, 0.16);
+    border: 1px solid rgba(129, 140, 248, 0.3);
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--indigo-light);
+    line-height: 1;
+    transition: transform 0.28s ease, background 0.28s ease;
+  }
+
+  details[open] summary::after {
+    transform: rotate(45deg);
+    background: rgba(168, 85, 247, 0.22);
+  }
+
+  .faq-answer {
+    padding: 0 24px 21px;
+    font-size: 0.92rem;
+    color: var(--text-dim);
+    animation: fadeIn 0.28s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ CTA BANNER ============ */
+  .cta-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 62px 34px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.22), rgba(168, 85, 247, 0.16) 55%, rgba(34, 211, 238, 0.12));
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .cta-banner::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 640px;
+    height: 640px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.38), rgba(168, 85, 247, 0.16) 42%, transparent 68%);
+    pointer-events: none;
+  }
+
+  .cta-banner > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-banner h2 {
+    font-size: clamp(1.55rem, 3.6vw, 2.3rem);
+    margin-bottom: 14px;
+  }
+
+  .cta-banner p {
+    max-width: 540px;
+    margin: 0 auto 30px;
+    color: var(--text-dim);
+    font-size: 0.98rem;
+  }
+
+  .cta-banner .btn {
+    padding: 15px 36px;
+    font-size: 1.02rem;
+  }
+
+  .cta-note {
+    margin-top: 18px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 34px 0 44px;
+    margin-top: 20px;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .footer-inner p {
+    font-size: 0.86rem;
+    color: var(--text-dim);
+  }
+
+  .footer-inner a {
+    color: var(--indigo-light);
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .footer-inner a:hover {
+    color: #fff;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links {
+      display: none;
+    }
+
+    .nav {
+      padding: 10px 16px;
+    }
+
+    .hero {
+      padding: 56px 0 48px;
+    }
+
+    .hero-desc {
+      font-size: 0.98rem;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+    }
+
+    .stats {
+      gap: 10px;
+    }
+
+    .stat-chip {
+      flex: 1 1 calc(50% - 10px);
+      min-width: 0;
+      padding: 12px 10px;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    section {
+      padding: 52px 0;
+    }
+
+    .section-head {
+      margin-bottom: 38px;
+    }
+
+    .step {
+      gap: 16px;
+    }
+
+    .step-num {
+      width: 46px;
+      height: 46px;
+      font-size: 1rem;
+    }
+
+    .steps::before {
+      left: 22px;
+    }
+
+    .step-body {
+      padding: 15px 18px;
+    }
+
+    summary {
+      padding: 16px 18px;
+      font-size: 0.93rem;
+    }
+
+    .faq-answer {
+      padding: 0 18px 18px;
+    }
+
+    .cta-banner {
+      padding: 44px 22px;
+      border-radius: 18px;
+    }
+
+    .cta-banner .btn {
+      width: 100%;
+    }
+
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <div class="container">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-mark">🎮</span>
+        <span class="brand-name">Roblox Account Switcher</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a class="btn btn-primary" href="https://gitscore.cc">Download</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="container">
+    <span class="pill"><span class="pill-dot"></span>Roblox Accounts Manager</span>
+    <h1>Switch Roblox Accounts<br>in One Click, Not One Minute</h1>
+    <p class="hero-desc">
+      Save unlimited Roblox accounts, jump between them instantly, keep cookies fresh automatically,
+      and run multiple game instances side by side — all from a lightweight Windows app.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://gitscore.cc">⬇ Download for Windows</a>
+      <a class="btn btn-ghost" href="https://gitscore.cc">View on GitHub</a>
+    </div>
+    <div class="stats">
+      <div class="stat-chip">
+        <span class="stat-value">120K+</span>
+        <span class="stat-label">Downloads</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-value">v3.4.2</span>
+        <span class="stat-label">Latest version</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-value">Windows 10 / 11</span>
+        <span class="stat-label">Platform</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-value">Free &amp; open source</span>
+        <span class="stat-label">License</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-eyebrow">Features</div>
+      <h2>Everything you need to juggle Roblox accounts</h2>
+      <p>Built for players who main more than one account — alt grinders, testers, and families sharing a PC.</p>
+    </div>
+    <div class="features-grid">
+      <article class="feature-card">
+        <div class="feature-icon">🗂️</div>
+        <h3>Unlimited Account Slots</h3>
+        <p>Store as many Roblox accounts as you want with custom nicknames, avatars, and notes. No cap, no cloud dependency.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>One-Click Switching</h3>
+        <p>Swap the active Roblox session in a single click. The app handles logout, cookie injection, and relaunch for you.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>Auto Cookie Refresh</h3>
+        <p>Background refresh keeps your saved sessions valid so you never get logged out mid-grind or after a long break.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">🪟</div>
+        <h3>Multi-Instance Launch</h3>
+        <p>Run several Roblox clients at the same time, each pinned to a different account — perfect for trades and testing.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Cookie Import / Export</h3>
+        <p>Back up your account list as encrypted JSON, move it to a new PC, or import a batch of cookies in seconds.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Local &amp; Private</h3>
+        <p>Everything is stored on your machine. No account credentials are sent to any server — open source and auditable.</p>
+      </article>
+    </div>
+  </div>
+</section>

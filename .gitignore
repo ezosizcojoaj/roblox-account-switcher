@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+build/
+dist/
+
+# account vault (NEVER commit)
+vault/
+*.session
+*.cookie
+*.roblosecurity
+
+# user config
+config/local.yaml
+config/accounts.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# logs
+logs/
+*.log
